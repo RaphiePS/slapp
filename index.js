@@ -2,11 +2,21 @@
 // TODO ADD A WAY TO ATTACH TO AN EXISTING POST
 // TODO ADD A WAY TO DELETE A POST
 
+
 var Slack = require("slack-node");
 var WebSocketClient = require("websocket").client;
 var EventEmitter = require("events").EventEmitter;
 var util = require("util");
 var Q = require("q");
+
+
+var sequentialMap = function(arr, promiseify) {
+    return arr.reduce(function (soFar, a) {
+        return soFar.then(function() {
+            return promiseify(a);
+        });
+    }, Q());
+};
 
 var Post = function(slack, slapp) {
   this.slack = slack;
