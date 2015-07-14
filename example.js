@@ -1,6 +1,6 @@
-var Slapp = require("./newlib");
+var Slapp = require("./index");
 
-var slapp = new Slapp("xoxb-7595285936-2jWAHk7o2uZf133mY2caU82o");
+var slapp = new Slapp("xoxb-7595285936-2jWAHk7o2uZf133mY2caU82o"); // revoked lol
 
 var SmileyGame = slapp.register({
   state: {
@@ -68,16 +68,16 @@ var SmileyGame = slapp.register({
 
 
 // create a smiley game
-SmileyGame.create({channel: "#testing-slapp"})
+SmileyGame.create({channel: "#testing-slapp"}).done();
 
 // create a smiley game, overriding state
-SmileyGame.create({channel: "#testing-slapp"}, {icon: ":poop:"})
-.then(function(game) {
-  storeInADatabase(game.id);
-});
+// SmileyGame.create({channel: "#testing-slapp"}, {icon: ":poop:"})
+// .then(function(game) {
+//   storeInADatabase(game.id);
+// });
 
 // re-attach to a previously-created post if your bot restarts
-SmileyGame.attach({id: getIdFromDatabase()});
+// SmileyGame.attach({id: getIdFromDatabase()});
 
 
 var Checklist = slapp.register({
