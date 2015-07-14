@@ -1,6 +1,7 @@
 var Slapp = require("./index");
+var config = require("./config"); // gitignored
 
-var slapp = new Slapp("xoxb-7595285936-2jWAHk7o2uZf133mY2caU82o"); // revoked lol
+var slapp = new Slapp(config.token);
 
 var SmileyGame = slapp.register({
   state: {
@@ -8,7 +9,8 @@ var SmileyGame = slapp.register({
     y: 0,
     height: 5,
     width: 5,
-    icon: ":simple_smile:"
+    icon: ":simple_smile:",
+    updated_by: null
   },
   text: function(state) {
     // automatically re-rendered after each event
@@ -23,6 +25,9 @@ var SmileyGame = slapp.register({
     strs.push(state.icon);
     for (var i = 0; i < state.height - state.y - 1; i++) {
       strs.push("\n|");
+    }
+    if (state.updated_by) {
+      strs.push("\nLast updated by: " + state.updated_by);
     }
     return strs.join("");
   },
@@ -61,7 +66,11 @@ var SmileyGame = slapp.register({
       this.myCustomSetX(state.x - 1);
     },
     arrow_right: function(e, state) {
-      this.myCustomSetX(state.x + 1);
+      var that = this;
+      return e.userInfo.then(function(info) {
+        that.myCustomSetX(state.x + 1); // :(
+        state.updated_by = info.profile.first_name;
+      });
     }
   }
 });

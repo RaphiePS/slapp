@@ -21,10 +21,14 @@ class App {
   }
 
   onMessage(m) {
+    var userInfo = this.slackApi("users.info", {user: m.user}).then((res) => {
+      return res.user;
+    });
     var event = {
       emoji: m.reaction,
       userId: m.user,
-      type: m.type
+      type: m.type,
+      userInfo: userInfo
     }
     var execute = (fn) => {
       Q.when(fn.call(this, event, this.state))

@@ -52,6 +52,7 @@ class Slapp extends EventEmitter {
   }
 
   slackApi(method, args, okErrors) {
+    okErrors = okErrors || [];
     return Q.ninvoke(this.slack, "api", method, args).then((res) => {
       if (res.ok || okErrors.indexOf(res.error) !== -1) {
         return res;
