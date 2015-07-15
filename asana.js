@@ -19,5 +19,5 @@ http.get({
   console.log(json);
 })
 .catch(function(err){
-  console.log(json);
+  console.log(err);
 });

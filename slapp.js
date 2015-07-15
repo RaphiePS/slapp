@@ -1,7 +1,7 @@
 /*jslint node: true, esnext: true */
 "use strict";
 
-var WebSocket = require("ws");
+var WebSocket = require("ws"); // jshint ignore:line
 var Slack = require("slack-node");
 var Q = require("q");
 var App = require("./App");
