@@ -1,5 +1,8 @@
-var Slapp = require("./index");
+/*jslint node: true, esnext: true */
+"use strict";
+
 var config = require("./config"); // gitignored
+var Slapp = require("./index");
 
 var slapp = new Slapp(config.token);
 
@@ -15,15 +18,15 @@ var SmileyGame = slapp.register({
   text: function(state) {
     // automatically re-rendered after each event
     var strs = [];
-    strs.push("|")
-    for (var i = 0; i < state.y; i++) {
+    strs.push("|");
+    for (let i = 0; i < state.y; i++) {
       strs.push("\n|");
     }
-    for (var i = 0; i < state.x; i++) {
+    for (let i = 0; i < state.x; i++) {
       strs.push("    ");
     }
     strs.push(state.icon);
-    for (var i = 0; i < state.height - state.y - 1; i++) {
+    for (let i = 0; i < state.height - state.y - 1; i++) {
       strs.push("\n|");
     }
     if (state.updated_by) {
@@ -31,7 +34,7 @@ var SmileyGame = slapp.register({
     }
     return strs.join("");
   },
-  buttons: function(state) {
+  buttons: function() { //state
     return ["arrow_up", "arrow_down", "arrow_left", "arrow_right", "x"];
   },
   myCustomSetX: function(x) {
@@ -40,7 +43,7 @@ var SmileyGame = slapp.register({
   myCustomSetY: function(y) {
     this.state.y = Math.min(Math.max(y, 0), this.state.height - 1);
   },
-  click: function(e) {
+  click: function() { //e
     // if no handler for the given emoji is in handlers, this is called instead
     // basically a "fallback" or default
     this.destroy(); // this destroys the message if we want
@@ -89,7 +92,7 @@ SmileyGame.create({channel: "#testing-slapp"}).done();
 // SmileyGame.attach({id: getIdFromDatabase()});
 
 
-var Checklist = slapp.register({
+var Checklist = slapp.register({ // jshint ignore:line
   state: {
     items: ["Make audio game", "Build Asana integration", "PagerDuty!"],
     done: [false, false, false],

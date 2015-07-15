@@ -1,3 +1,6 @@
+/*jslint node: true, esnext: true */
+"use strict";
+
 var Q = require("q");
 
 class App {
@@ -29,7 +32,8 @@ class App {
       userId: m.user,
       type: m.type,
       userInfo: userInfo
-    }
+    };
+
     var execute = (fn) => {
       Q.when(fn.call(this, event, this.state))
       .then((res) => {
@@ -48,7 +52,7 @@ class App {
   sequentialMap(arr, promiseFn) {
     return arr.reduce((soFar, a) => {
       return soFar.then(() =>  promiseFn(a));
-    }, Q());
+    }, new Q());
   }
 
   addButtons() {
@@ -74,7 +78,7 @@ class App {
     if (state) {
       Object.assign(instance.state, state);
     }
-    args = args || {}
+    args = args || {};
     instance.slapp.validateField(args, "channel");
     args.text = instance.text(instance.state);
     args.unfurl_links = args.unfurl_links || false;
@@ -92,7 +96,7 @@ class App {
     if (state) {
       Object.assign(instance.state, state);
     }
-    args = args || {}
+    args = args || {};
     instance.slapp.validateField(args, "id");
     instance.onCreation(instance.slapp.fromId(args.id));
     instance.update();
