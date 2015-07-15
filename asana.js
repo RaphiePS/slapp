@@ -1,7 +1,6 @@
 /*jslint node: true, esnext: true */
 "use strict";
 
-// require("babel/register");
 var config = require("./config");
 var Http = require("./http");
 
@@ -15,9 +14,9 @@ http.get({
     "Authorization": "Basic " + config.asanaKey
   }
 })
-.then(function(json) {
+.then(json => {
   console.log(json);
 })
-.catch(function(err){
+.catch(err => {
   console.log(err);
 });
