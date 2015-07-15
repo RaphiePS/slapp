@@ -18,4 +18,4 @@ var Http = function() {
   };
 };
 
-module.export = Http;
+module.exports = Http;

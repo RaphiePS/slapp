@@ -12,7 +12,7 @@ http.get({
   headers: {
     "User-Agent": "request",
     "Content-Type": "application/json",
-    "Authorization": "Basic " + config.asanaKey //new Buffer(config.asanaKey, 'base64').toString('base64')
+    "Authorization": "Basic " + config.asanaKey
   }
 })
 .then(function(json) {
