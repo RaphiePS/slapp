@@ -46,15 +46,46 @@ var asanaApi = {
 	user: "users/",
 	workspaces: "workspaces",
 	tasks: "tasks",
-	// subTasks: "tasks/{task-id}/subtasks"
+	// subTasks: "tasks/<task-id>/subtasks"
 };
 
+var asanaCmdDocs = [
+	"Prefix all commands with *Asanabot:*",
+	"[ *commands* ] Brings up this menu.",
+	"[ *me* ] Key word to reference authorized user where ids are req.",
+	"[ *users* ] Get all Users _(not public)_",
+	"[ *user* { *_user-id_* | defaults to *_me_* } ] Get single user.",
+	"[ *workspaces* ] Get all workspaces.",
+	"[ *tasks* *_workspace-id_* { *_user-id_* | defaults to *_me_* } ] Get all tasks for workspace.",
+	"[ *flag* _--refresh-cache_ ] Dumps stored cache of requests."
+	// subTasks: "tasks/<task-id>/subtasks"
+];
+
 const LIMIT = 20;
-const CMD_TRIGGER = "Asanabot: ";
+const CMD_TRIGGER = "Slapp ";
 
 var cache = {};
+var flags = ["--refresh-cache"];
 
+var checkFlags = function (m) {
+	flags.forEach(flag => {
+		console.log(m.text.indexOf(flag) !== -1);
+		if (m.text.indexOf(flag) !== -1){
+			switch (flag) {
+				case "--refresh-cache":
+					cache = {};
+					break;
+				default:
+					break;
+			}
 
+			console.log(m.text);
+			m.text = m.text.replace(flag, "");
+		}
+	});
+
+	return m;
+};
 	
 var resource = function(resource, params) {
 	return asanaApi[resource] ? [version, asanaApi[resource], params].join("") : "";
@@ -77,14 +108,6 @@ var stringBuilder = function(data) {
 	});
 };
 
-/*var paramsCmdHelper = function(p) {
-	if (!p || typeof parseInt(p, 10) !== "number" || p !== "me") {
-		return;
-	}
-
-	return p;
-};*/
-
 var cmdSwitch = function (m) {
 	var args = {};
 	var cmdArray = m.text.replace(CMD_TRIGGER, "").split(" ");
@@ -96,8 +119,6 @@ var cmdSwitch = function (m) {
 	console.log(args.cmd, params);
 	console.log("/Cmd ------------------");
 
-	// params.map((p) => paramsCmdHelper);
-
 	switch (args.cmd) {
 		case "me":
 			args.params = "?opt_fields=name,email";
@@ -108,7 +129,7 @@ var cmdSwitch = function (m) {
 			args.cacheKey = args.cmd + args.params;
 			break;
 		case "user":
-			args.params = params[0];
+			args.params = params[0] || "me";
 			args.cacheKey = args.cmd + args.params;
 			break;
 		case "workspaces":
@@ -116,9 +137,17 @@ var cmdSwitch = function (m) {
 			break;
 		case "tasks": 
 			// requires workspace id and assignee id
+			params[1] = params[1] || "me";
+
+			console.log(params);
 			args.params = ["?workspace=", params[0],"&assignee=", params[1]].join("");
 			args.cacheKey = args.cmd;
 			break;
+
+		case "cmd":
+			return new Promise((resolve) => {
+				resolve(asanaCmdDocs.join("\n"));
+			});
 
 		default:
 			return new Promise((resolve) => {
@@ -163,7 +192,7 @@ slapp.register({
     incompleteIcon: "white_medium_square"
   },
   text: function() {
-  	return "Power up!";
+  	return asanaCmdDocs.join("\n");
   },
   buttons: function(state) {
     return state.numberIcons.slice(0, state.items.length);
@@ -219,42 +248,46 @@ slapp.on("raw_message", (m) => {
 		return;
 	}
 
-	instance.command(m);
+	instance.command(checkFlags(m));
 });
 
 
 // Tests
-var timer = setTimeout(() => {
+/*var timer = setTimeout(() => {
 	// var cmd = instance.command;
 
-	// cmdSwitch({channel: "#testing-slapp", text: "Asana: user 40357631998916"}).then(data => {
+	// cmdSwitch({channel: "#testing-slapp", text: "Asanabot: user 40357631998916"}).then(data => {
 	// 	console.log(data);
 	// });
 
-	// cmd({channel: "#testing-slapp", text: "Asana: test"});
-	// cmd({channel: "#testing-slapp", text: "Asana: user me"});
+	// cmd({channel: "#testing-slapp", text: "Asanabot: test"});
+	// cmd({channel: "#testing-slapp", text: "Asanabot: user me"});
 	
-	// cmd({channel: "#testing-slapp", text: "Asana: user 40357631998916"}); // alex
-	// cmd({channel: "#testing-slapp", text: "Asana: user 40357631998928"}); // albert
+	// cmd({channel: "#testing-slapp", text: "Asanabot: user 40357631998916"}); // alex
+	// cmd({channel: "#testing-slapp", text: "Asanabot: user 40357631998928"}); // albert
 	
-	// cmd({channel: "#testing-slapp", text: "Asana: workspaces"});
-	// cmdSwitch({channel: "#testing-slapp", text: "Asana: tasks 730375869140 40357631998916"}).then(data => {
-	// 	console.log(data);
-	// });
+	// cmd({channel: "#testing-slapp", text: "Asanabot: workspaces"});
+	cmdSwitch({channel: "#testing-slapp", text: "Asanabot: tasks 730375869140"}).then(data => {
+		console.log(data);
+	});
 
 	// cmdSwitch just fetches data on command
 	// not publishing to Slack 
-	// cmdSwitch({channel: "#testing-slapp", text: "Asana: users"}).then(data => {
+	// cmdSwitch({channel: "#testing-slapp", text: "Asanabot: users"}).then(data => {
 	// 	console.log(data);
 	// });
 
 	clearTimeout(timer);
-}, 1000);
-
-// var timer2 = setTimeout(() => {
-// 	var cmd = instance.command;
-// 	cmd({channel: "#testing-slapp", text: "Asana: me"});
-// 	clearTimeout(timer2);
-// }, 10000);
-
+}, 1000);*/
+/*
+var timer2 = setTimeout(() => {
+	var cmd = instance.command;
+	// cmd({channel: "#testing-slapp", text: "Asana: me"});
+	
+	// cmdSwitch(checkFlags({channel: "#testing-slapp", text: "Asanabot: tasks 730375869140 --refresh-cache"})).then(data => {
+	// 	console.log(data);
+	// });
+	clearTimeout(timer2);
+}, 10000);
+*/
 
