@@ -62,7 +62,7 @@ var asanaCmdDocs = [
 ];
 
 const LIMIT = 20;
-const CMD_TRIGGER = "Slapp ";
+const CMD_TRIGGER = "Asanabot: ";
 
 var cache = {};
 var flags = ["--refresh-cache"];
@@ -253,7 +253,7 @@ slapp.on("raw_message", (m) => {
 
 
 // Tests
-/*var timer = setTimeout(() => {
+var timer = setTimeout(() => {
 	// var cmd = instance.command;
 
 	// cmdSwitch({channel: "#testing-slapp", text: "Asanabot: user 40357631998916"}).then(data => {
@@ -278,7 +278,7 @@ slapp.on("raw_message", (m) => {
 	// });
 
 	clearTimeout(timer);
-}, 1000);*/
+}, 1000);
 /*
 var timer2 = setTimeout(() => {
 	var cmd = instance.command;
