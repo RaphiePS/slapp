@@ -45,11 +45,12 @@ var asanaApi = {
 	users: "users",
 	user: "users/",
 	workspaces: "workspaces",
-	tasks: "tasks"
+	tasks: "tasks",
+	// subTasks: "tasks/{task-id}/subtasks"
 };
 
-//const LIMIT = 20;
-const CMD_TRIGGER = "Asana: ";
+const LIMIT = 20;
+const CMD_TRIGGER = "Asanabot: ";
 
 var cache = {};
 
@@ -69,10 +70,10 @@ var stringBuilder = function(data) {
 		var dv = data[val];
 
 		if (Array.isArray(dv)) {
-			dv = dv.map(item => "\n\t " + stringBuilder(item).join("\t")).join("");
+			dv = dv.map(item => "\n\t" + stringBuilder(item).join("\t")).join("");
 		}
 
-		return dv === null ? "" : [val, ": ", dv, "\n"].join("");
+		return dv === null ? "" : ["*", val, ":* ", dv, "\n"].join("");
 	});
 };
 
@@ -153,7 +154,7 @@ var fetchInfo = function (args) {
 	});
 };
 
-var Asana = slapp.register({
+slapp.register({
   state: {
     items: [],
     done: [],
@@ -162,7 +163,7 @@ var Asana = slapp.register({
     incompleteIcon: "white_medium_square"
   },
   text: function() {
-  	return "...";
+  	return "Power up!";
   },
   buttons: function(state) {
     return state.numberIcons.slice(0, state.items.length);
@@ -173,25 +174,41 @@ var Asana = slapp.register({
     state.done[index] = !state.done[index];
   },
   command: (m) => {
-  	cmdSwitch(m).then((data) => {
-  		if (typeof data === "string") {
-  			return [data];
-  		}
-
-  		return stringBuilder(data);
-  	})
-  	.then((formattedData) => {
-  		console.log(formattedData);
-		instance.slackApi("chat.postMessage", {
+  		var args = {
+  			username: "Asanabot",
 			channel: m.channel,
-			text: formattedData.join(""),
-			as_user: true
-		});
-	});
-  }
-});
+			markdown: true,
+			// icon_url: "https://chartbeat.com/favicon.ico"
+			icon_emoji: ":koala:"
+		};
 
-Asana.create({channel: "#testing-slapp"}).then((inst) => {
+		cmdSwitch(m).then((data) => {
+			if (typeof data === "string") {
+				return [data];
+			}
+
+			return stringBuilder(data);
+		})
+		.then((formattedData) => {
+			console.log(formattedData);
+
+			//  don't push all users to Slack
+			if (formattedData.length >= LIMIT){
+				formattedData = ["*_Too Large to render on Slack_*"];
+			} 
+
+			args.text = formattedData.join("");
+			instance.slackApi("chat.postMessage", args);
+		});
+	}
+})
+.create({
+	channel: "#testing-slapp",
+	username: "Asanabot",
+	// icon_url: "https://chartbeat.com/favicon.ico"
+	icon_emoji: ":koala:"
+})
+.then((inst) => {
 	instance = inst;
 });
 
@@ -207,7 +224,7 @@ slapp.on("raw_message", (m) => {
 
 
 // Tests
-/*var timer = setTimeout(() => {
+var timer = setTimeout(() => {
 	// var cmd = instance.command;
 
 	// cmdSwitch({channel: "#testing-slapp", text: "Asana: user 40357631998916"}).then(data => {
@@ -215,7 +232,7 @@ slapp.on("raw_message", (m) => {
 	// });
 
 	// cmd({channel: "#testing-slapp", text: "Asana: test"});
-	// cmd({channel: "#testing-slapp", text: "Asana: me"});
+	// cmd({channel: "#testing-slapp", text: "Asana: user me"});
 	
 	// cmd({channel: "#testing-slapp", text: "Asana: user 40357631998916"}); // alex
 	// cmd({channel: "#testing-slapp", text: "Asana: user 40357631998928"}); // albert
@@ -232,7 +249,7 @@ slapp.on("raw_message", (m) => {
 	// });
 
 	clearTimeout(timer);
-}, 1000);*/
+}, 1000);
 
 // var timer2 = setTimeout(() => {
 // 	var cmd = instance.command;

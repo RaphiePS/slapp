@@ -83,6 +83,11 @@ class App {
     args.text = instance.text(instance.state);
     args.unfurl_links = args.unfurl_links || false;
     args.as_user = true;
+
+    if (args.username) {
+      args.as_user = false;
+    }
+
     return instance.slackApi("chat.postMessage", args)
     .then((res) => {
       instance.onCreation(res);
