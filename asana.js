@@ -292,7 +292,7 @@ slapp.on("raw_message", (m) => {
 	instance.command(checkFlags(m));
 });
 // Tests
-var timer = setTimeout(() => {
+/*var timer = setTimeout(() => {
 	var cmd = instance.command;
 
 	// cmdSwitch({channel: "#testing-slapp", text: "Asanabot: user 40357631998916"}).then(data => {
@@ -333,6 +333,6 @@ var timer2 = setTimeout(() => {
 
 	cmd(checkFlags({text: "Asanabot: tasks 730375869140"}));
 	clearTimeout(timer2);
-}, 10000);
+}, 10000);*/
 
 
