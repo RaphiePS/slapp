@@ -16,11 +16,14 @@ class App {
   }
 
   update() {
-    return this.slackApi("chat.update", {
-      channel: this.message.channel,
-      ts: this.message.ts,
-      text: this.text(this.state)
-    });
+    if(!(this.text(this.state)=="")) {
+      return this.slackApi("chat.update", {
+        channel: this.message.channel,
+        ts: this.message.ts,
+        text: this.text(this.state)
+      });
+    }
+    return  
   }
 
   onMessage(m) {
