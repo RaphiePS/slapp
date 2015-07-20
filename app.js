@@ -16,11 +16,14 @@ class App {
   }
 
   update() {
-    return this.slackApi("chat.update", {
-      channel: this.message.channel,
-      ts: this.message.ts,
-      text: this.text(this.state)
-    });
+    if(!(this.text(this.state)=="")) {
+      return this.slackApi("chat.update", {
+        channel: this.message.channel,
+        ts: this.message.ts,
+        text: this.text(this.state)
+      });
+    }
+    return  
   }
 
   onMessage(m) {
@@ -83,6 +86,11 @@ class App {
     args.text = instance.text(instance.state);
     args.unfurl_links = args.unfurl_links || false;
     args.as_user = true;
+
+    if (args.username) {
+      args.as_user = false;
+    }
+
     return instance.slackApi("chat.postMessage", args)
     .then((res) => {
       instance.onCreation(res);
