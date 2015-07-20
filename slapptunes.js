@@ -27,8 +27,10 @@ var download = function(url, dest) {
   });
 };
 
+var playa = null;
+
 /*
-     SLAPP TUNES 
+     SLAPP TUNES
     Download your favorite youtube or soundcloud tunes from your favorite Slack Channel and play them back
 */
 var SlappTunes = slapp.register({
@@ -76,44 +78,46 @@ var SlappTunes = slapp.register({
 		      console.error(error);
 		    } else {
 		      console.log('File downloaded at: ' + result.file);
-		      if (state.player == null) {
-		      	state.player = new Player('./'+sc_song+'.mp3');
-		      	state.player.on('error', function(err){
-				  // when error occurs
-				  console.log(err);
-				});
+		      if (playa == null) {
+            console.log("NEW");
+		      	playa = new Player('./'+sc_song+'.mp3');
+		      	playa.on('error', function(err){
+				          // when error occurs
+				    console.log(err);
+				    });
 		      }
 		      else {
-		        state.player.add('./'+sc_song+'.mp3');
+            console.log("ADDED");
+		        playa.add('./'+sc_song+'.mp3');
 		      }
 		    }
           });
         })
 
-        
+
       }
 
-     
+
     },
     metal: function(e, state) {
       //handler for playing a locally downloaded playlist
-      if (state.player != null) {
-      	state.player.play(function(err, player){
+      if (playa != null) {
+      	playa.play(function(err, player){
 	      console.log('playend!');
 	  	});
       }
     },
     mute: function(e, state) {
-      //handler for stopping the playlist  
-	  if (state.player != null) {
+      //handler for stopping the playlist
+	  if (playa != null) {
 	  	state.playing = false;
-	    state.player.stop();
+	    playa.stop();
 	  }
     },
     fast_forward: function(e, state) {
    	  //TODO: Issue with this
-      if (state.player != null) {
-        state.player.next();
+      if (playa != null) {
+        playa.next();
       }
     }
   }

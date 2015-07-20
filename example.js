@@ -92,7 +92,7 @@ SmileyGame.create({channel: "#testing-slapp"}).done();
 // SmileyGame.attach({id: getIdFromDatabase()});
 
 
-var Checklist = slapp.register({ // jshint ignore:line
+exports.Checklist = slapp.register({ // jshint ignore:line
   state: {
     items: ["Make audio game", "Build Asana integration", "PagerDuty!"],
     done: [false, false, false],
