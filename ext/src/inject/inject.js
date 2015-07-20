@@ -1,6 +1,15 @@
 $(function() {
 	var socket = new WebSocket("ws://localhost:8080");
 
+	var playButton = function() {
+		return document.querySelector(".player-control-button.player-play-pause")
+	}
+
+	var isPlaying = function() {
+		var button = playButton();
+		return Array.prototype.slice.call(button.classList).indexOf("pause") !== -1;
+	}
+
 	socket.onmessage = function(raw) {
 		console.log(raw);
 		var m = JSON.parse(raw.data);
@@ -10,8 +19,16 @@ $(function() {
 		// if (m.action === "toggle-mute") {
 		// 	document.querySelector(".player-control-button.volume").click();
 		// }
-		if (m.action === "toggle-play") {
-			document.querySelector(".player-control-button.player-play-pause").click();
+		if (m.action === "play") {
+			if (!isPlaying()) {
+				playButton().click();
+			}
+		}
+
+		if (m.action === "pause") {
+			if (isPlaying()) {
+				playButton().click();
+			}
 		}
 	}
 
@@ -24,11 +41,6 @@ $(function() {
 			if (!match) continue;
 			return match[1] === "0";
 		}
-	}
-
-	var isPlaying = function() {
-		var button = document.querySelector(".player-control-button.player-play-pause");
-		return Array.prototype.slice.call(button.classList).indexOf("pause") !== -1;
 	}
 
 	setInterval(function() {

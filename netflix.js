@@ -12,19 +12,47 @@ var Netflix = slapp.register({
     connection: null
   },
   text: function(state) {
-    if (state.numConnections === 0) {
+    if (state.numConnections === 0 || !state.currentStatus) {
       return "No Netflix currently connected!";
     }
 
-    return JSON.stringify(state.currentStatus);
+    var s = state.currentStatus;
+
+    if (s.loading) {
+      return "Loading...";
+    }
+
+    var ar = [];
+    ar.push("*Show*: ");
+    ar.push(s.showName)
+    ar.push("\n");
+    ar.push("*Episode*: ");
+    ar.push(s.episodeNum + " - " + s.episodeName);
+    ar.push("\n");
+    ar.push("*Time Remaining*: ");
+    ar.push(s.timeRemaining);
+
+    return ar.join("");
   },
   buttons: function(state) {
-    return [];
+    return ["arrow_forward", "no_good", "fast_forward"];
   },
   click: function(e) {
+
+  },
+  send: function(action) {
+    this.state.connection.send(JSON.stringify({action: action}));
   },
   handlers: {
-
+    arrow_forward: function() {
+      this.send("play");
+    },
+    no_good: function() {
+      this.send("pause");
+    },
+    fast_forward: function() {
+      this.send("next");
+    }
   }
 });
 
