@@ -1,6 +1,6 @@
 var Slapp = require("./index");
 
-var slapp = new Slapp("xoxb-7654759799-VvVozFzNg0sxlAREruXl2930"); // revoked lol
+var slapp = new Slapp("your channel"); // revoked lol
 
 var scmp3 = require('soundcloud-mp3');
 
@@ -137,7 +137,7 @@ channels = slapp.slackApi("channels.list")
     for (var i = 0, len = channels.length; i < len; i++) {
       lookup[channels[i].name] = channels[i];
     }
-    var music = lookup["testing-slapp"]; //change this to scrape a different channel
+    var music = lookup["music"]; //change this to scrape a different channel
     return music["id"];
   })
   //get the history of all messages in the channel
