@@ -1,6 +1,6 @@
 var Slapp = require("./index");
 
-var slapp = new Slapp("your token");
+var slapp = new Slapp("xoxp-2323751764-7472774128-7473497571-35c3cd");
 
 // some errors are reported here some other places lol
 slapp.on("error", function(e) {
